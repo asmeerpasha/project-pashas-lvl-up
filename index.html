@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pasha's LvL Up">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png">
+<title>Project Pasha's LvL Up</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#0b0d12;color:#f5f7fb}
+.wrap{max-width:760px;margin:auto;padding:22px 16px 50px}.hero{padding:22px 4px 16px}.eyebrow{color:#8d96a8;font-size:12px;letter-spacing:2px;font-weight:700}.title{font-size:31px;font-weight:850;margin:6px 0}.sub{color:#9ca5b5}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{background:#141821;border:1px solid #242a36;border-radius:18px;padding:16px}.stat{font-size:27px;font-weight:800}.label{font-size:12px;color:#929bab;margin-top:3px}
+.score{display:flex;align-items:center;justify-content:space-between;margin:14px 0}.ring{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#fff var(--p),#2a303c 0);position:relative}.ring:after{content:"";position:absolute;inset:9px;background:#141821;border-radius:50%}.ring b{position:relative;z-index:1;font-size:20px}
+.habit{margin-top:12px}.habittop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.habitname{font-weight:700}.pts{font-size:11px;color:#7f8899}.control{display:flex;gap:8px;align-items:center}
+input[type=number]{width:110px;background:#0e1117;border:1px solid #303746;color:#fff;padding:10px;border-radius:10px;font-size:15px}
+button{border:0;border-radius:10px;padding:10px 13px;background:#252c39;color:#fff;font-weight:700;cursor:pointer}button.active{background:#fff;color:#0b0d12}
+.bar{height:8px;background:#292f3a;border-radius:99px;overflow:hidden;margin-top:8px}.fill{height:100%;background:#fff;width:0}
+.actions{display:flex;gap:8px;margin:15px 0}.actions button{flex:1}
+.history{margin-top:16px}.row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #252a34;color:#cbd1dc;font-size:14px}.muted{color:#80899a}
+@media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+
+<style>
+.install-banner{display:none;margin:0 0 14px;padding:12px 14px;border:1px solid #303746;border-radius:14px;background:#141821;align-items:center;justify-content:space-between;gap:10px}
+.install-banner.show{display:flex}.install-banner span{font-size:13px;color:#cbd1dc}.install-banner button{white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="install-banner" id="installBanner"><span>📲 Install Project Pasha's LvL Up on your phone</span><button id="installBtn">Install App</button></div>
+  <div class="hero">
+    <div class="eyebrow">PERSONAL SELF-IMPROVEMENT TRACKER</div>
+    <div class="title">PROJECT PASHA'S LVL UP 🚀</div>
+    <div class="sub">Day by day. Level by level.</div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><div class="stat" id="streak">0 🔥</div><div class="label">Current streak</div></div>
+    <div class="card"><div class="stat" id="best">0</div><div class="label">Best streak</div></div>
+    <div class="card"><div class="stat" id="avg">0%</div><div class="label">7-day average</div></div>
+    <div class="card"><div class="stat" id="date"></div><div class="label">Today</div></div>
+  </div>
+
+  <div class="card score">
+    <div><div class="label">TODAY'S SCORE</div><div class="stat"><span id="score">0</span>/100</div><div class="label" id="msg">Start your day.</div></div>
+    <div class="ring" id="ring" style="--p:0%"><b id="ringtxt">0%</b></div>
+  </div>
+
+  <div class="card">
+    <div class="habit">
+      <div class="habittop"><span class="habitname">💧 Water</span><span class="pts">15 pts · target 4 L</span></div>
+      <div class="control"><input id="water" type="number" min="0" max="10" step=".1" placeholder="Litres"></div>
+      <div class="bar"><div class="fill" id="waterbar"></div></div>
+    </div>
+    <div class="habit">
+      <div class="habittop"><span class="habitname">🚶 Steps</span><span class="pts">15 pts · target 10,000</span></div>
+      <div class="control"><input id="steps" type="number" min="0" max="100000" step="100" placeholder="Steps"></div>
+      <div class="bar"><div class="fill" id="stepsbar"></div></div>
+    </div>
+    <div class="habit"><div class="habittop"><span class="habitname">🚫 No Junk</span><span class="pts">15 pts</span><button data-key="junk">Not done</button></div></div>
+    <div class="habit"><div class="habittop"><span class="habitname">🍬 No Sugar</span><span class="pts">10 pts</span><button data-key="sugar">Not done</button></div></div>
+    <div class="habit"><div class="habittop"><span class="habitname">🧘 No-Fap</span><span class="pts">15 pts</span><button data-key="nofap">Not done</button></div></div>
+    <div class="habit">
+      <div class="habittop"><span class="habitname">📚 Study</span><span class="pts">15 pts · target 6 h</span></div>
+      <div class="control"><input id="study" type="number" min="0" max="24" step=".25" placeholder="Hours"></div>
+      <div class="bar"><div class="fill" id="studybar"></div></div>
+    </div>
+    <div class="habit">
+      <div class="habittop"><span class="habitname">😴 Sleep</span><span class="pts">15 pts · target 7 h</span></div>
+      <div class="control"><input id="sleep" type="number" min="0" max="24" step=".25" placeholder="Hours"></div>
+      <div class="bar"><div class="fill" id="sleepbar"></div></div>
+    </div>
+  </div>
+
+  <div class="actions"><button id="save">Save today</button><button id="reset">Reset today</button></div>
+
+  <div class="card history">
+    <div class="habittop"><span class="habitname">📅 History</span><span class="muted">saved on this device</span></div>
+    <div id="history"></div>
+  </div>
+</div>
+
+<script>
+const todayKey=()=>new Date().toISOString().slice(0,10);
+const key=()=>`pasha_${todayKey()}`;
+const state={junk:false,sugar:false,nofap:false,water:0,steps:0,study:0,sleep:0};
+let d=JSON.parse(localStorage.getItem(key())||"null")||{...state};
+
+const ids=["water","steps","study","sleep"];
+function render(){
+  ids.forEach(id=>document.getElementById(id).value=d[id]||"");
+  document.querySelectorAll("button[data-key]").forEach(b=>{let k=b.dataset.key;b.classList.toggle("active",!!d[k]);b.textContent=d[k]?"Done ✓":"Not done"});
+  let parts=[
+    Math.min((d.water||0)/4,1)*15,
+    Math.min((d.steps||0)/10000,1)*15,
+    d.junk?15:0,d.sugar?10:0,d.nofap?15:0,
+    Math.min((d.study||0)/6,1)*15,
+    Math.min((d.sleep||0)/7,1)*15
+  ];
+  let s=Math.round(parts.reduce((a,b)=>a+b,0)); document.getElementById("score").textContent=s;
+  document.getElementById("ringtxt").textContent=s+"%"; document.getElementById("ring").style.setProperty("--p",s+"%");
+  document.getElementById("waterbar").style.width=Math.min((d.water||0)/4*100,100)+"%";
+  document.getElementById("stepsbar").style.width=Math.min((d.steps||0)/10000*100,100)+"%";
+  document.getElementById("studybar").style.width=Math.min((d.study||0)/6*100,100)+"%";
+  document.getElementById("sleepbar").style.width=Math.min((d.sleep||0)/7*100,100)+"%";
+  document.getElementById("msg").textContent=s>=100?"Perfect day. 🔥":s>=80?"Strong day. Keep going.":s>=50?"Good start. Push further.":"Start your day.";
+}
+ids.forEach(id=>document.getElementById(id).addEventListener("input",e=>{d[id]=Number(e.target.value)||0;render()}));
+document.querySelectorAll("button[data-key]").forEach(b=>b.onclick=()=>{d[b.dataset.key]=!d[b.dataset.key];render()});
+function scoreOf(x){return Math.round(Math.min((x.water||0)/4,1)*15+Math.min((x.steps||0)/10000,1)*15+(x.junk?15:0)+(x.sugar?10:0)+(x.nofap?15:0)+Math.min((x.study||0)/6,1)*15+Math.min((x.sleep||0)/7,1)*15)}
+document.getElementById("save").onclick=()=>{localStorage.setItem(key(),JSON.stringify(d));updateStats();alert("Today saved ✓")};
+document.getElementById("reset").onclick=()=>{if(confirm("Reset today's data?")){d={...state};render()}};
+function updateStats(){
+ let arr=[]; for(let i=0;i<30;i++){let dt=new Date();dt.setDate(dt.getDate()-i);let x=JSON.parse(localStorage.getItem(`pasha_${dt.toISOString().slice(0,10)}`)||"null");if(x)arr.push({date:dt.toISOString().slice(0,10),score:scoreOf(x)})}
+ let streak=0; for(let i=0;i<30;i++){let dt=new Date();dt.setDate(dt.getDate()-i);let x=JSON.parse(localStorage.getItem(`pasha_${dt.toISOString().slice(0,10)}`)||"null");if(x&&scoreOf(x)>=80)streak++;else break}
+ document.getElementById("streak").textContent=streak+" 🔥";
+ let best=0,run=0;for(let i=29;i>=0;i--){let dt=new Date();dt.setDate(dt.getDate()-i);let x=JSON.parse(localStorage.getItem(`pasha_${dt.toISOString().slice(0,10)}`)||"null");if(x&&scoreOf(x)>=80){run++;best=Math.max(best,run)}else run=0}
+ document.getElementById("best").textContent=best;
+ let last7=arr.filter(x=>{let diff=(new Date(todayKey())-new Date(x.date))/86400000;return diff<7});document.getElementById("avg").textContent=(last7.length?Math.round(last7.reduce((a,b)=>a+b.score,0)/last7.length):0)+"%";
+ document.getElementById("history").innerHTML=arr.slice(0,10).map(x=>`<div class="row"><span>${x.date}</span><b>${x.score}/100</b></div>`).join("")||'<div class="muted" style="padding-top:10px">No saved days yet.</div>';
+}
+document.getElementById("date").textContent=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"short"});
+render();updateStats();
+
+// PWA service worker + in-app install prompt
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+let deferredInstallPrompt = null;
+const installBanner = document.getElementById('installBanner');
+const installBtn = document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  installBanner.classList.add('show');
+});
+installBtn.addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  installBanner.classList.remove('show');
+});
+window.addEventListener('appinstalled', () => installBanner.classList.remove('show'));
+</script>
+</body>
+</html>
